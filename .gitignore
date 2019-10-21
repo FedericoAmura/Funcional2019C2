@@ -1,2 +1,9 @@
 *.class
 *.log
+
+*.csv
+
+.bloop
+target
+project
+.metals
