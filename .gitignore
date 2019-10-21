@@ -1,9 +1,16 @@
+# root
 *.class
-*.log
-
 *.csv
-
+*.log
 .bloop
-target
-project
+.idea
 .metals
+project
+target
+
+# dbFiller
+dbFiller/target
+
+# shared
+shared/postgres-data
+shared/*.csv

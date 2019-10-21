@@ -1,0 +1,16 @@
+version: "3.4"
+
+x-scalaComponent:
+  &scala-component
+  image: "scala-sbt/latest"
+  build:
+    context: ..
+    dockerfile: ./docker/Dockerfile
+    target: base
+
+services:
+  postgres:
+    image: "postgres"
+    container_name: "postgresSoy"
+
+  dbFiller: *scala-component
