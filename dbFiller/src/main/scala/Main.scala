@@ -1,3 +1,73 @@
+import doobie._
+import doobie.implicits._
+import cats._
+import cats.effect._
+import cats.implicits._
+import doobie.util.ExecutionContexts
+
+import sfpsfiuba.commons.Row
+
+
 object Main extends App {
-  println("Hello dbFiller!!!")
+
+
+  val csvFile = io.Source.fromFile("./train.csv")
+  val line: String = csvFile.getLines.drop(1).next()
+  val x: Row = Row.apply(line)
+  
+  // for (line <- csvFile.getLines.drop(1).take(1)) {
+  //   val cols = line.split(",").map(_.trim)
+  //   // do whatever you want with the columns here
+  //   println(s"${cols(0)}|${cols(1)}|${cols(2)}|${cols(3)}")
+
+  //   x = Row.apply(line)
+  //   println(x)
+  // }
+  csvFile.close
+
+
+  implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
+
+  val xa = Transactor.fromDriverManager[IO](
+    "org.postgresql.Driver",     // driver classname
+    "jdbc:postgresql://host.docker.internal:54320/soy",     // connect URL (driver-specific)
+    "root",                  // user
+    "root",                          // password
+    Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
+  )
+
+  val drop =
+    sql"""
+      DROP TABLE IF EXISTS soy
+    """.update.run
+
+  val create =
+    sql"""
+      CREATE TABLE soy (
+        id Int,
+        date Text,
+        open Int,
+        high Int,
+        cierre Float,
+        rest Text
+      )
+    """.update.run
+
+  (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
+
+  Update[Row]("INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?)", None).updateMany(List(x))
+    .transact(xa).unsafeRunSync
+
+  val testQuery = sql"select * from soy limit 1".query[Row].unique
+  val y: Row = testQuery.transact(xa).unsafeRunSync
+
+  println("Saqué de la db " + y)
+
+  // val program1 = sql"select 42".query[Int].unique
+
+  // val io1 = program1.transact(xa)
+
+  // val program2 = sql"select id, foo from test where id = 15".query[Test].option
+  // println(program2.transact(xa).unsafeRunSync)
+
 }

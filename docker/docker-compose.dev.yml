@@ -1,6 +1,7 @@
 version: "3.4"
 services:
   postgres:
+    image: postgres:10.10
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
@@ -10,7 +11,8 @@ services:
     volumes:
       - ../shared/postgres-data:/var/lib/postgresql/data
 
-  dbFiller:
+  db_filler:
+    build: .
     expose:
       - "5005"
     ports:
