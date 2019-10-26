@@ -1,0 +1,17 @@
+version: "3.4"
+services:
+  postgres:
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=soy
+    ports:
+      - "54320:5432"
+
+  dbFiller:
+    image: "dbfiller/latest"
+    build:
+      args:
+        serviceDir: dbFiller
+      target: prod
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]

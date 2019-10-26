@@ -1,2 +1,17 @@
+# root
 *.class
+*.csv
 *.log
+.bloop
+.idea
+.metals
+project
+target
+.devcontainer
+
+# dbFiller
+dbFiller/target
+
+# shared
+shared/postgres-data
+shared/*.csv
