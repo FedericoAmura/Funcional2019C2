@@ -12,18 +12,18 @@ object Main extends App {
 
 
   val csvFile = io.Source.fromFile("./train.csv")
-  val line: String = csvFile.getLines.drop(1).next()
-  val x: Row = Row.apply(line)
-  
-  // for (line <- csvFile.getLines.drop(1).take(1)) {
-  //   val cols = line.split(",").map(_.trim)
-  //   // do whatever you want with the columns here
-  //   println(s"${cols(0)}|${cols(1)}|${cols(2)}|${cols(3)}")
 
-  //   x = Row.apply(line)
-  //   println(x)
-  // }
+  var rows: List[Row] = List()
+
+  for (line <- csvFile.getLines.drop(1)) {
+    val cols = line.split(",").map(_.trim)
+    // do whatever you want with the columns here
+
+    rows = Row.apply(line) :: rows
+  }
   csvFile.close
+
+  println("Lei " + rows.length + " rows")
 
 
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
@@ -46,8 +46,8 @@ object Main extends App {
       CREATE TABLE soy (
         id Int,
         date Text,
-        open Int,
-        high Int,
+        open Float,
+        high Float,
         cierre Float,
         rest Text
       )
@@ -55,7 +55,7 @@ object Main extends App {
 
   (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
 
-  Update[Row]("INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?)", None).updateMany(List(x))
+  Update[Row]("INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?)", None).updateMany(rows)
     .transact(xa).unsafeRunSync
 
   val testQuery = sql"select * from soy limit 1".query[Row].unique
