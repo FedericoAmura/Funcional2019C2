@@ -15,3 +15,4 @@ services:
     container_name: "postgresSoy"
 
   dbFiller: *scala-component
+  soyApi: *scala-component

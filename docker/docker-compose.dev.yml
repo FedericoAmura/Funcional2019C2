@@ -23,3 +23,15 @@ services:
       - ../dbFiller/src:/app/src
       - ../dbFiller/build.sbt:/app/build.sbt
       - ../dbFiller/train.csv:/app/train.csv
+
+  soyApi:
+    image: soyapi
+    expose:
+      - "5005"
+    ports:
+      - "5006:5005"
+      - "8080:8080"
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "-jvm-debug", "5005", "run"]
+    volumes:
+      - ../soyApi/src:/app/src
+      - ../soyApi/build.sbt:/app/build.sbt
