@@ -15,6 +15,18 @@ libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-specs2"   % doobieVersion
 )
 
-// val sparkVersion = "2.3.0"
+val sparkVersion = "2.4.4"
 
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.4"
+libraryDependencies ++= List(
+  "org.apache.spark" %% "spark-core" % sparkVersion,
+  "org.apache.spark" %% "spark-sql" % sparkVersion,
+  "org.apache.spark" %% "spark-mllib" % sparkVersion
+)
+
+val framelessVersion = "0.8.0"
+
+libraryDependencies ++= List(
+  "org.typelevel" %% "frameless-dataset" % framelessVersion,
+  "org.typelevel" %% "frameless-ml"      % framelessVersion,
+  "org.typelevel" %% "frameless-cats"    % framelessVersion  
+)

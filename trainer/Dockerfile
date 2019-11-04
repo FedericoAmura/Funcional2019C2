@@ -17,8 +17,4 @@ COPY start-worker.sh /start-worker.sh
 
 ENV SPARK_DIST_CLASSPATH="/hadoop/etc/hadoop:/hadoop/share/hadoop/common/lib/*:/hadoop/share/hadoop/common/*:/hadoop/share/hadoop/hdfs:/hadoop/share/hadoop/hdfs/lib/*:/hadoop/share/hadoop/hdfs/*:/hadoop/share/hadoop/mapreduce/lib/*:/hadoop/share/hadoop/mapreduce/*:/hadoop/share/hadoop/yarn:/hadoop/share/hadoop/yarn/lib/*:/hadoop/share/hadoop/yarn/*"
 
-ENV SPARK_MASTER_PORT 7077
-ENV SPARK_MASTER_WEBUI_PORT 8080
-ENV SPARK_LOCAL_IP spark-master
-
-EXPOSE 8080 8081 8082 7077 6066 20020
+EXPOSE 8080 8081 8082 7077 6066

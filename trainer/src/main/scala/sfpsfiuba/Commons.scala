@@ -5,14 +5,18 @@ final case class Row(
     date: String,
     open: Int,
     high: Int,
-    cierre: Float,
+    cierre: Double,
     rest: String
 )
 
-// object Row {
-//     def apply(csvRow: String): Row = csvRow match {
-//         case s"$id,$date,$open,$high,$cierre,$rest" 
-//             => Row(id.toInt, date, open.toInt, high.toInt, cierre.toFloat, rest)
-//         case _ => null
-//     }
-// }
+object Row {
+    def apply(csvRow: String): Row = {
+        val values = csvRow.split(",").map(_.trim)
+        Row(values(0).toInt,
+            values(1),
+            values(2).toInt,
+            values(3).toInt,
+            values(4).toDouble,
+            values.drop(4).mkString(","))
+    }
+}
