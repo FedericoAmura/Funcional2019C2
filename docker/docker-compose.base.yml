@@ -2,7 +2,8 @@ version: "3.4"
 
 x-scalaComponent:
   &scala-component
-  image: "scala-sbt/latest"
+  depends_on:
+    - postgres
   build:
     context: ..
     dockerfile: ./docker/Dockerfile
@@ -10,7 +11,7 @@ x-scalaComponent:
 
 services:
   postgres:
-    image: "postgres"
+    image: postgres:10.10
     container_name: "postgresSoy"
 
   dbFiller: *scala-component

@@ -30,7 +30,7 @@ object Main extends App {
 
   val xa = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",     // driver classname
-    "jdbc:postgresql://host.docker.internal:54320/soy",     // connect URL (driver-specific)
+    "jdbc:postgresql://postgres:5432/soy",     // connect URL (driver-specific)
     "root",                  // user
     "root",                          // password
     Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
@@ -44,19 +44,33 @@ object Main extends App {
   val create =
     sql"""
       CREATE TABLE soy (
-        id Int,
-        date Text,
-        open Float,
-        high Float,
-        cierre Float,
-        rest Text
+        Id int,
+        Fecha text,
+        Open double precision,
+        High double precision,
+        Low double precision,
+        Last double precision,
+        Cierre double precision,
+        AjDif double precision,
+        Mon text,
+        OIVol int,
+        OIDif int,
+        VolOpe int,
+        Unidad text,
+        DolarBN double precision,
+        DolarItau double precision,
+        DifSem double precision,
+        Hash int
       )
     """.update.run
 
   (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
-
-  Update[Row]("INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?)", None).updateMany(rows)
-    .transact(xa).unsafeRunSync
+  
+  val insert = Update[Row](
+    "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", None)
+    .updateMany(rows)
+    .transact(xa)
+    .unsafeRunSync
 
   val testQuery = sql"select * from soy limit 1".query[Row].unique
   val y: Row = testQuery.transact(xa).unsafeRunSync
