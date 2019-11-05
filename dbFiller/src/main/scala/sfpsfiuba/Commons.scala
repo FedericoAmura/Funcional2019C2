@@ -1,5 +1,7 @@
 package sfpsfiuba.commons
 
+import scala.util.hashing.MurmurHash3
+
 final case class Row(
     Id: Int,
     Fecha: String,
@@ -16,10 +18,17 @@ final case class Row(
     Unidad: String,
     DolarBN: Double,
     DolarItau: Double,
-    DifSem: Double
+    DifSem: Double,
+    Hash: Int
 )
 
 object Row {
+
+    def rowToHash(row: Array[String]) = {
+        MurmurHash3.arrayHash(
+            row.drop(1).patch(5, Nil, 1))  // Remove Id and Cierre
+    }
+
     def apply(csvRow: String): Row = {
         val values = csvRow.split(",").map(_.trim)
         Row(values(0).toInt,
@@ -37,6 +46,7 @@ object Row {
             values(12),
             values(13).toDouble,
             if (values(14) == "NA") 0 else values(14).toDouble,
-            values(15).toDouble)
+            values(15).toDouble,
+            rowToHash(values))
     }
 }

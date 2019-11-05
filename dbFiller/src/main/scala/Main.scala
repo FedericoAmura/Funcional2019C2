@@ -59,14 +59,15 @@ object Main extends App {
         Unidad text,
         DolarBN double precision,
         DolarItau double precision,
-        DifSem double precision
+        DifSem double precision,
+        Hash int
       )
     """.update.run
 
   (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
   
   val insert = Update[Row](
-    "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", None)
+    "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", None)
     .updateMany(rows)
     .transact(xa)
     .unsafeRunSync
