@@ -69,33 +69,33 @@ object Main extends App {
   // val res = distData.map((x: Row) => x.id).reduce(_ + _)
 
   val res = dataset
-    .filter(_.id > 30)
-    .agg(avg(dataset('cierre)))
+    .filter(_.Id > 30)
+    .agg(avg(dataset('Cierre)))
     .show()
     .run()
 
-  case class TrainingRow(open: Int, high: Int, cierre: Double)
+  case class TrainingRow(Open: Double, High: Double, Cierre: Double)
 
   val trainingSet = dataset.select(
-    dataset('open),
-    dataset('high),
-    dataset('cierre)
+    dataset('Open),
+    dataset('High),
+    dataset('Cierre)
   ).as[TrainingRow]
 
-  case class Features(open: Int, high: Int)
+  case class Features(Open: Double, High: Double)
   
   val assembler = TypedVectorAssembler[Features]
   
   case class DatasetWithFeatures(
-    open: Int,
-    high: Int,
-    cierre: Double,
+    Open: Double,
+    Hight: Double,
+    Cierre: Double,
     features: Vector
   )
   
   val trainingDataWithFeatures = assembler.transform(trainingSet).as[DatasetWithFeatures]
 
-  case class RFInputs(cierre: Double, features: Vector)
+  case class RFInputs(Cierre: Double, features: Vector)
 
   val rf = TypedRandomForestRegressor[RFInputs]
   
@@ -107,9 +107,9 @@ object Main extends App {
   val testDataWithFeatures = assembler.transform(testData).as[DatasetWithFeatures]
     
   case class RowPrediction(
-    open: Int,
-    high: Int,
-    cierre: Double,
+    Open: Double,
+    High: Double,
+    Cierre: Double,
     features: Vector,
     predictedCierre: Double
   )
@@ -117,7 +117,7 @@ object Main extends App {
   val predictions = model.transform(testDataWithFeatures).as[RowPrediction]
 
   predictions.select(
-    predictions.col('cierre),
+    predictions.col('Cierre),
     predictions.col('predictedCierre)
   ).show().run()
 
