@@ -14,17 +14,13 @@ object SoyapiServer {
   def stream[F[_]: ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
     for {
       client <- BlazeClientBuilder[F](global).stream
-      helloWorldAlg = HelloWorld.impl[F]
-      jokeAlg = Jokes.impl[F](client)
-      soyAlg = Soy.impl[F]
+      soyAlg = SoyApp.impl[F]
 
       // Combine Service Routes into an HttpApp.
       // Can also be done via a Router if you
       // want to extract a segments not checked
       // in the underlying routes.
       httpApp = (
-        SoyapiRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-        SoyapiRoutes.jokeRoutes[F](jokeAlg) <+>
         SoyapiRoutes.soyRoutes[F](soyAlg)
       ).orNotFound
 
