@@ -1,4 +1,6 @@
 
+Hace falta instalar `apk add --no-cache libc6-compat gcompat libgomp`
+
 La imagen está basada en [este artículo](https://towardsdatascience.com/a-journey-into-big-data-with-apache-spark-part-1-5dfcc2bccdd2) y este [dockerfile](https://github.com/gettyimages/docker-spark/blob/master/Dockerfile).
 
 ## Correr master y worker:

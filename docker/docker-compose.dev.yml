@@ -1,6 +1,8 @@
 version: "3.4"
+
 services:
   postgres:
+    image: postgres:10.10
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
@@ -11,6 +13,8 @@ services:
       - "54320"
     volumes:
       - ../shared/postgres-data:/var/lib/postgresql/data
+    networks:
+      trainer-spark:
 
   dbFiller:
     image: dbfiller
@@ -23,3 +27,20 @@ services:
       - ../dbFiller/src:/app/src
       - ../dbFiller/build.sbt:/app/build.sbt
       - ../dbFiller/train.csv:/app/train.csv
+
+  trainer:
+    image: trainer
+    expose:
+      - "5005"
+    ports:
+      - "5005:5005"
+    environment:
+      - MODEL_OUTPUT_PATH=/trainer-data/model.pmml
+    volumes:
+      - ../trainer/src:/app/src
+      - ../trainer/build.sbt:/app/build.sbt
+      - ../shared/trainer-data/:/trainer-data
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
+
+networks:
+  trainer-spark:

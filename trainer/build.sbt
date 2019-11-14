@@ -1,5 +1,5 @@
 
-scalaVersion := "2.12.10"
+scalaVersion := "2.11.12"
 
 name := "trainer"
 organization := "ch.epfl.scala"
@@ -7,7 +7,7 @@ version := "1.0"
 
 libraryDependencies += "org.typelevel" %% "cats-core" % "2.0.0"
 
-lazy val doobieVersion = "0.8.4"
+lazy val doobieVersion = "0.7.1"
 
 libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-core"     % doobieVersion,
@@ -30,3 +30,17 @@ libraryDependencies ++= List(
   "org.typelevel" %% "frameless-ml"      % framelessVersion,
   "org.typelevel" %% "frameless-cats"    % framelessVersion  
 )
+
+libraryDependencies += "ml.dmlc" % "xgboost4j-spark" % "0.90"
+libraryDependencies += "org.jpmml" % "jpmml-sparkml" % "1.5.4"
+
+libraryDependencies += "org.pmml4s" %% "pmml4s" % "0.9.3"
+
+
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+
+initialize := {
+  val _ = initialize.value
+  if (sys.props("java.specification.version") != "1.8")
+    sys.error("Java 8 is required for this project.")
+}
