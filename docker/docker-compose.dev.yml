@@ -12,6 +12,7 @@ services:
       - "54320"
     volumes:
       - ../shared/postgres-data:/var/lib/postgresql
+      - ../shared/postgres-data/migrations/001-createTableSoy.sql:/docker-entrypoint-initdb.d/001-createTableSoy.sql
 
   dbFiller:
     image: dbfiller
