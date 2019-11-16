@@ -76,60 +76,43 @@ object SoyApp {
       Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
     )
 
+    def sanitizeString(s: String): String = {
+      s.replace(".0", "")
+    }
+
+    def hash(request: SoyRequest): Int = {
+      val requestArray: Array[String] = Array(
+        request.Fecha,
+        sanitizeString(request.Open.toString()),
+        sanitizeString(request.High.toString()),
+        sanitizeString(request.Low.toString()),
+        sanitizeString(request.Last.toString()),
+        sanitizeString(request.AjDif.toString()),
+        sanitizeString(request.Mon),
+        sanitizeString(request.OIVol.toString()),
+        sanitizeString(request.OIDif.toString()),
+        sanitizeString(request.VolOpe.toString()),
+        request.Unidad,
+        sanitizeString(request.DolarBN.toString()),
+        sanitizeString(request.DolarItau.toString()),
+        sanitizeString(request.DifSem.toString()))
+
+      MurmurHash3.arrayHash(requestArray)
+    }
+
     def processRequest(request: SoyApp.SoyRequest): F[SoyApp.SoyData] = {
       val reqHash: Int = hash(request)
+      val cierre = 5
 
-      val searchValue = sql"SELECT * FROM soy WHERE hash = $reqHash LIMIT 1".query[SoyData].option
-      val soyDataOption: Option[SoyData] = searchValue.transact(xa).unsafeRunSync
+      val insert = for {
+        _ <- sql"INSERT INTO soy (fecha, open, high, low, last, cierre, ajdif, mon, oivol, oidif, volope, unidad, dolarbn, dolaritau, difsem, hash) VALUES (${request.Fecha}, ${request.Open}, ${request.High}, ${request.Low}, ${request.Last}, ${cierre}, ${request.AjDif}, ${request.Mon}, ${request.OIVol}, ${request.OIDif}, ${request.VolOpe}, ${request.Unidad}, ${request.DolarBN}, ${request.DolarItau}, ${request.DifSem}, ${reqHash}) ON CONFLICT (hash) DO NOTHING".update.run
+        s <- sql"SELECT * FROM soy WHERE hash = $reqHash".query[SoyData].unique
+      } yield s
 
-      soyDataOption match {
-        case Some(s) => s.pure[F]
-        case None => insertAndReturnRecord(request, reqHash).pure[F]
-      }
+      val soyData = insert.transact(xa)
+      soyData.unsafeRunSync().pure[F]
     }
   }
 
-  def hash(request: SoyRequest): Int = {
-    val requestArray: Array[String] = Array(
-      request.Fecha,
-      sanitizeString(request.Open.toString()),
-      sanitizeString(request.High.toString()),
-      sanitizeString(request.Low.toString()),
-      sanitizeString(request.Last.toString()),
-      sanitizeString(request.AjDif.toString()),
-      sanitizeString(request.Mon),
-      sanitizeString(request.OIVol.toString()),
-      sanitizeString(request.OIDif.toString()),
-      sanitizeString(request.VolOpe.toString()),
-      request.Unidad,
-      sanitizeString(request.DolarBN.toString()),
-      sanitizeString(request.DolarItau.toString()),
-      sanitizeString(request.DifSem.toString()))
 
-    MurmurHash3.arrayHash(requestArray)
-  }
-
-  def sanitizeString(s: String): String = {
-    s.replace(".0", "")
-  }
-
-  def insertAndReturnRecord(request: SoyRequest, reqHash: Int): SoyData = {
-    SoyData(None,
-      request.Fecha,
-      request.Open,
-      request.High,
-      request.Low,
-      request.Last,
-      2,
-      request.AjDif,
-      request.Mon,
-      request.OIVol,
-      request.OIDif,
-      request.VolOpe,
-      request.Unidad,
-      request.DolarBN,
-      request.DolarItau,
-      request.DifSem,
-      reqHash)
-  }
 }
