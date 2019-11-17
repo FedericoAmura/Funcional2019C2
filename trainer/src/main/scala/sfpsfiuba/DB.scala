@@ -13,7 +13,7 @@ object DB {
 
   val xa = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",     // driver classname
-    "jdbc:postgresql://host.docker.internal:54320/soy",     // connect URL (driver-specific)
+    "jdbc:postgresql://postgres:5432/soy",     // connect URL (driver-specific)
     "root",                  // user
     "root"                          // password
     // Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing

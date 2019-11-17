@@ -8,11 +8,16 @@ x-scalaComponent:
     context: ..
     dockerfile: ./docker/Dockerfile
     target: base
+  networks:
+    - default
 
 services:
   postgres:
     image: postgres:10.10
     container_name: "postgresSoy"
+    networks:
+      - default
+      - trainer-spark
 
   dbFiller: *scala-component
 

@@ -12,9 +12,7 @@ services:
     expose:
       - "54320"
     volumes:
-      - ../shared/postgres-data:/var/lib/postgresql/data
-    networks:
-      trainer-spark:
+      - ../shared/postgres-data:/var/lib/postgresql
 
   dbFiller:
     image: dbfiller
@@ -43,4 +41,5 @@ services:
     entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
 
 networks:
+  default:
   trainer-spark:
