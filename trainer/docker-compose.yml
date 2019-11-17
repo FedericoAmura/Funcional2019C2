@@ -1,0 +1,61 @@
+version: "3.4"
+services:
+
+  spark-master:
+    image: trainer-spark
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    networks:
+      - trainer-spark
+    environment:
+      - "SPARK_LOCAL_IP=spark-master"
+      - "SPARK_MASTER_PORT=7077"
+      - "SPARK_MASTER_WEBUI_PORT=8080"
+    command: "./start-master.sh"
+
+  spark-worker:
+    image: trainer-spark
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    networks:
+      - trainer-spark
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "SPARK_LOCAL_IP=spark-worker"
+    command: "/start-worker.sh"
+
+  spark-submit:
+    image: trainer-spark
+    depends_on:
+      - spark-worker
+    # ports:
+    #   - "8082:8082"
+    #   - "20020:20020"
+    networks:
+      trainer-spark:
+        ipv4_address: 172.23.0.15
+
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_WORKER_WEBUI_PORT=8082"
+      - "SPARK_DRIVER_PORT=20020"
+    command: "bash"
+
+networks:
+  trainer-spark:
+    driver: bridge
+    ipam:
+      # driver: default
+     config:
+      - subnet: 172.23.0.0/16
+        # gateway: 172.23.0.1
