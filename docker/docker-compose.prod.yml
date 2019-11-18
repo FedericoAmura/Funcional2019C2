@@ -15,3 +15,11 @@ services:
         serviceDir: dbFiller
       target: prod
     entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
+
+  soyApi:
+    image: "dbfiller/latest"
+    build:
+      args:
+        serviceDir: dbFiller
+      target: prod
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]

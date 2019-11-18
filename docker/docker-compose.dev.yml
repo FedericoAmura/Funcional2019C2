@@ -2,17 +2,18 @@ version: "3.4"
 
 services:
   postgres:
-    image: postgres:10.10
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=soy
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - "54320:5432"
     expose:
       - "54320"
     volumes:
       - ../shared/postgres-data:/var/lib/postgresql
+      - ../shared/postgres-data/migrations/001-createTableSoy.sql:/docker-entrypoint-initdb.d/001-createTableSoy.sql
 
   dbFiller:
     image: dbfiller
@@ -25,6 +26,18 @@ services:
       - ../dbFiller/src:/app/src
       - ../dbFiller/build.sbt:/app/build.sbt
       - ../dbFiller/train.csv:/app/train.csv
+
+  soyApi:
+    image: soyapi
+    expose:
+      - "5005"
+    ports:
+      - "5006:5005"
+      - "8080:8080"
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "-jvm-debug", "5005", "~run"]
+    volumes:
+      - ../soyApi/src:/app/src
+      - ../soyApi/build.sbt:/app/build.sbt
 
   trainer:
     image: trainer

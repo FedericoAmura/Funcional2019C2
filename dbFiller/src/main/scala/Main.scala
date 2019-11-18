@@ -23,65 +23,24 @@ object Main extends App {
   }
   csvFile.close
 
-  println("Lei " + rows.length + " rows")
+  println("" + rows.length + " rows para insertar")
 
 
   implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
   val xa = Transactor.fromDriverManager[IO](
-    "org.postgresql.Driver",     // driver classname
-    "jdbc:postgresql://postgres:5432/soy",     // connect URL (driver-specific)
-    "root",                  // user
-    "root",                          // password
+    "org.postgresql.Driver", // driver classname
+    "jdbc:postgresql://postgres:5432/soy", // connect URL (driver-specific)
+    "root", // user
+    "root", // password
     Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
   )
 
-  val drop =
-    sql"""
-      DROP TABLE IF EXISTS soy
-    """.update.run
-
-  val create =
-    sql"""
-      CREATE TABLE soy (
-        Id int,
-        Fecha text,
-        Open double precision,
-        High double precision,
-        Low double precision,
-        Last double precision,
-        Cierre double precision,
-        AjDif double precision,
-        Mon text,
-        OIVol int,
-        OIDif int,
-        VolOpe int,
-        Unidad text,
-        DolarBN double precision,
-        DolarItau double precision,
-        DifSem double precision,
-        Hash int
-      )
-    """.update.run
-
-  (drop, create).mapN(_ + _).transact(xa).unsafeRunSync
-  
   val insert = Update[Row](
     "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", None)
     .updateMany(rows)
     .transact(xa)
     .unsafeRunSync
 
-  val testQuery = sql"select * from soy limit 1".query[Row].unique
-  val y: Row = testQuery.transact(xa).unsafeRunSync
-
-  println("Saqué de la db " + y)
-
-  // val program1 = sql"select 42".query[Int].unique
-
-  // val io1 = program1.transact(xa)
-
-  // val program2 = sql"select id, foo from test where id = 15".query[Test].option
-  // println(program2.transact(xa).unsafeRunSync)
-
+  println("Listo")
 }
