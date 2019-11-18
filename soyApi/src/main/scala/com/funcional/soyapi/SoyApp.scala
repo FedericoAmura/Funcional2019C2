@@ -15,8 +15,11 @@ import org.http4s.EntityEncoder
 import org.http4s.circe._
 import scala.util.hashing.MurmurHash3
 
+import sfpsfiuba.commons.Row
+import sfpsfiuba.ml.RandomForestPMMLEvaulator
+
 trait SoyApp[F[_]] {
-  def processRequest(n: SoyApp.SoyRequest): F[SoyApp.SoyData]
+  def processRequest(n: SoyApp.SoyRequest): F[Row]
 }
 
 object SoyApp {
@@ -40,29 +43,9 @@ object SoyApp {
                                DifSem: Double
                              )
 
-  // Response
-  final case class SoyData(Id: Option[Int],
-                           Fecha: String,
-                           Open: Double,
-                           High: Double,
-                           Low: Double,
-                           Last: Double,
-                           Cierre: Double,
-                           AjDif: Double,
-                           Mon: String,
-                           OIVol: Int,
-                           OIDif: Int,
-                           VolOpe: Int,
-                           Unidad: String,
-                           DolarBN: Double,
-                           DolarItau: Double,
-                           DifSem: Double,
-                           Hash: Int
-                          )
-
-  object SoyData {
-    implicit def greetingEntityEncoder[F[_] : Applicative]: EntityEncoder[F, SoyData] =
-      jsonEncoderOf[F, SoyData]
+  object Row {
+    implicit def greetingEntityEncoder[F[_] : Applicative]: EntityEncoder[F, Row] =
+      jsonEncoderOf[F, Row]
   }
 
   def impl[F[_] : Applicative]: SoyApp[F] = new SoyApp[F] {
@@ -75,6 +58,8 @@ object SoyApp {
       "root", // password
       Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
     )
+
+    val modelPath = sys.env("MODEL_INPUT_PATH")
 
     def sanitizeString(s: String): String = {
       s.replace(".0", "")
@@ -100,19 +85,20 @@ object SoyApp {
       MurmurHash3.arrayHash(requestArray)
     }
 
-    def processRequest(request: SoyApp.SoyRequest): F[SoyApp.SoyData] = {
+    def cierre(request: SoyRequest): Map[String, Any] = RandomForestPMMLEvaulator.run(modelPath, request.DolarBN, request.DolarItau, request.DifSem)
+
+    def processRequest(request: SoyApp.SoyRequest): F[Row] = {
       val reqHash: Int = hash(request)
-      val cierre = 5
+      var reqCierre: Double = cierre(request).last._2.asInstanceOf[Double]
 
       val insert = for {
-        _ <- sql"INSERT INTO soy (fecha, open, high, low, last, cierre, ajdif, mon, oivol, oidif, volope, unidad, dolarbn, dolaritau, difsem, hash) VALUES (${request.Fecha}, ${request.Open}, ${request.High}, ${request.Low}, ${request.Last}, ${cierre}, ${request.AjDif}, ${request.Mon}, ${request.OIVol}, ${request.OIDif}, ${request.VolOpe}, ${request.Unidad}, ${request.DolarBN}, ${request.DolarItau}, ${request.DifSem}, ${reqHash}) ON CONFLICT (hash) DO NOTHING".update.run
-        s <- sql"SELECT * FROM soy WHERE hash = $reqHash".query[SoyData].unique
+        _ <- sql"INSERT INTO soy (fecha, open, high, low, last, cierre, ajdif, mon, oivol, oidif, volope, unidad, dolarbn, dolaritau, difsem, hash) VALUES (${request.Fecha}, ${request.Open}, ${request.High}, ${request.Low}, ${request.Last}, ${reqCierre}, ${request.AjDif}, ${request.Mon}, ${request.OIVol}, ${request.OIDif}, ${request.VolOpe}, ${request.Unidad}, ${request.DolarBN}, ${request.DolarItau}, ${request.DifSem}, ${reqHash}) ON CONFLICT (hash) DO NOTHING".update.run
+        s <- sql"SELECT * FROM soy WHERE hash = $reqHash".query[Row].unique
       } yield s
 
       val soyData = insert.transact(xa)
       soyData.unsafeRunSync().pure[F]
     }
   }
-
 
 }

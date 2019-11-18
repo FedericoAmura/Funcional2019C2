@@ -34,10 +34,13 @@ services:
     ports:
       - "5006:5005"
       - "8080:8080"
+    environment:
+      - MODEL_INPUT_PATH=/trainer-data/model.pmml
     entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "-jvm-debug", "5005", "~run"]
     volumes:
       - ../soyApi/src:/app/src
       - ../soyApi/build.sbt:/app/build.sbt
+      - ../shared/trainer-data/:/trainer-data
 
   trainer:
     image: trainer
