@@ -4,6 +4,7 @@ val CirceVersion = "0.11.1"
 val DoobieVersion = "0.8.4"
 val Specs2Version = "4.1.0"
 val LogbackVersion = "1.2.3"
+val Pmml4sVersion = "0.9.3"
 
 
 lazy val root = (project in file("."))
@@ -24,7 +25,8 @@ lazy val root = (project in file("."))
       "org.typelevel"   %% "cats-core"           % CatsVersion,
       "org.tpolecat"    %% "doobie-core"         % DoobieVersion,
       "org.tpolecat"    %% "doobie-postgres"     % DoobieVersion,
-      "org.tpolecat"    %% "doobie-specs2"       % DoobieVersion
+      "org.tpolecat"    %% "doobie-specs2"       % DoobieVersion,
+      "org.pmml4s"      %% "pmml4s"              % Pmml4sVersion
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3"),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.0")
