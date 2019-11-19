@@ -13,5 +13,7 @@ target
 dbFiller/target
 
 # shared
-shared/postgres-data/data
+shared/postgres-data
+!shared/postgres-data/migrations
+shared/trainer-data
 shared/*.csv
