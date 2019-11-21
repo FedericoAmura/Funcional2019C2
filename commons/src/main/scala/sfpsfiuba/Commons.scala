@@ -4,7 +4,7 @@ import scala.util.hashing.MurmurHash3
 
 final case class Row(
     Id: Int,
-    Fecha: String,
+    Fecha: String,  // date
     Open: Double,
     High: Double,
     Low: Double,
@@ -29,9 +29,9 @@ object Row {
             row.drop(1).patch(5, Nil, 1))  // Remove Id and Cierre
     }
 
-    def apply(csvRow: String): Row = {
-        val values = csvRow.split(",").map(_.trim)
-        Row(values(0).toInt,
+    def apply(csvRow: String): Row = {  // Try[Row]: MonadTransformer
+        val values = csvRow.split(",").map(_.trim)  // Try[List].get
+        Row(values(0).toInt,  // DataLoader -> try()
             values(1),
             values(2).toDouble,
             values(3).toDouble,

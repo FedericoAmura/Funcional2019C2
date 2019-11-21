@@ -5,9 +5,11 @@ import cats.effect._
 import sfpsfiuba.commons.Row
 
 
-object CSVReader {
+object CSV {
+
+  type CSV = IO[List[Row]]
   
-  def run(filename: String): IO[List[Row]] = {
+  def fromPath(filename: String): CSV = {  // miLift
     val acquire: IO[BufferedSource] = IO(Source.fromFile(filename))
     Resource.fromAutoCloseable(acquire)
       .use { 
@@ -20,5 +22,4 @@ object CSVReader {
         }
       }
   }
-  
 }

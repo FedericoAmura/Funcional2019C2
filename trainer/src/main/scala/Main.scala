@@ -1,3 +1,4 @@
+import scala.util.Properties
 
 import sfpsfiuba.commons.{Row,DB}
 import sfpsfiuba.ml.SparkRFPipeline
@@ -13,7 +14,7 @@ object Main extends App {
   Logger.getLogger("org").setLevel(Level.OFF)
   Logger.getLogger("akka").setLevel(Level.OFF)
 
-  val modelPath = sys.env("MODEL_OUTPUT_PATH")
+  val modelPath = Properties.envOrElse("MODEL_OUTPUT_PATH", "/tmp/model.pmml")
 
   val rows: List[Row] = DB.getRows()
 

@@ -5,9 +5,13 @@
 .bloop
 .idea
 .metals
-project
 target
 .devcontainer
+
+# project
+commons/project
+dbFiller/project
+trainer/project
 
 # dbFiller
 dbFiller/target
