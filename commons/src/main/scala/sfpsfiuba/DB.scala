@@ -19,6 +19,13 @@ object DB {
     // Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
   )
 
+  def insertRows(rows: List[Row]): IO[Int] = {
+    val query: String = "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    Update[Row](query, None)
+      .updateMany(rows)
+      .transact(xa)
+  }
+
   def getRows(): List[Row] = {
     sql"select * from soy"
       .query[Row]
@@ -26,6 +33,5 @@ object DB {
       .transact(xa)
       .unsafeRunSync
   }
-
 
 }

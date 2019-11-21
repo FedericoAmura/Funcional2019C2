@@ -14,6 +14,12 @@ import java.io.File
 
 object SparkRFPipeline {
 
+  // case class TrainingRow(Open: Double, High: Double, Cierre: Double)
+  // case class Features(Open: Double, High: Double)
+  // case class DatasetWithFeatures(Open: Double, High: Double, Cierre: Double, features: Vector)
+  // case class RFInputs(Cierre: Double, features: Vector)
+  // case class RowPrediction(Open: Double, High: Double, Cierre: Double, features: Vector, prediction: Double)
+
   def run(rows: List[Row], modelPath: String):Unit = {
 
     val conf = new SparkConf()
@@ -38,13 +44,13 @@ object SparkRFPipeline {
     val vectorAssembler = new VectorAssembler().
       setInputCols(Array("DolarBN", "DolarItau", "DifSem")).
       setOutputCol("features")
-    
+
     val rfRegressor = new RandomForestRegressor()
       .setFeaturesCol("features")
       .setLabelCol("Cierre")
-    
+
     val schema: StructType = trainingSet.schema;
-    
+
     val pipeline = new Pipeline()
       .setStages(Array(vectorAssembler, rfRegressor))
     val model = pipeline.fit(trainingSet)
