@@ -1,22 +1,28 @@
-package sfpsfiuba.commons
+package com.funcional.soyapi.sfpsfiuba
 
+object Commons {
 
-final case class Row(
-    Id: Int,
-    Fecha: String,
-    Open: Double,
-    High: Double,
-    Low: Double,
-    Last: Double,
-    Cierre: Double,
-    AjDif: Double,
-    Mon: String,
-    OIVol: Int,
-    OIDif: Int,
-    VolOpe: Int,
-    Unidad: String,
-    DolarBN: Double,
-    DolarItau: Double,
-    DifSem: Double,
-    Hash: Int
-)
+  final case class Cierre(cierre: Double)
+
+  final case class Row(
+                        Id: Int,
+                        Fecha: String,
+                        Open: Double,
+                        High: Double,
+                        Low: Double,
+                        Last: Double,
+                        Cierre: Double,
+                        AjDif: Double,
+                        Mon: String,
+                        OIVol: Int,
+                        OIDif: Int,
+                        VolOpe: Int,
+                        Unidad: String,
+                        DolarBN: Double,
+                        DolarItau: Double,
+                        DifSem: Double,
+                        Hash: Int
+                      )
+
+}
+

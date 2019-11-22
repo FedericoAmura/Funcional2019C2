@@ -1,25 +1,17 @@
 package com.funcional.soyapi
 
 import cats._
-import cats.effect._
+import cats.effect.IO
 import cats.implicits._
-import doobie._
-import doobie.implicits._
-import doobie.util.ExecutionContexts
-import io.circe._
-import io.circe.Decoder
-import io.circe.generic.auto._
-import io.circe.syntax._
-import io.circe.{Encoder, Json}
-import org.http4s.EntityEncoder
-import org.http4s.circe._
-import scala.util.hashing.MurmurHash3
+import com.funcional.soyapi.sfpsfiuba.Commons.Cierre
+import com.funcional.soyapi.sfpsfiuba.DB
+import com.funcional.soyapi.sfpsfiuba.ml.RandomForestPMMLEvaluator
 
-import sfpsfiuba.commons.Row
-import sfpsfiuba.ml.RandomForestPMMLEvaulator
+import scala.util.hashing.MurmurHash3
+import scala.util.{Failure, Success, Try}
 
 trait SoyApp[F[_]] {
-  def processRequest(n: SoyApp.SoyRequest): F[Row]
+  def processRequest(n: SoyApp.SoyRequest): F[IO[Cierre]]
 }
 
 object SoyApp {
@@ -43,61 +35,41 @@ object SoyApp {
                                DifSem: Double
                              )
 
-  object Row {
-    implicit def greetingEntityEncoder[F[_] : Applicative]: EntityEncoder[F, Row] =
-      jsonEncoderOf[F, Row]
-  }
-
   def impl[F[_] : Applicative]: SoyApp[F] = new SoyApp[F] {
-    implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
 
-    val xa = Transactor.fromDriverManager[IO](
-      "org.postgresql.Driver", // driver classname
-      "jdbc:postgresql://postgres:5432/soy", // connect URL (driver-specific)
-      "root", // user
-      "root", // password
-      Blocker.liftExecutionContext(ExecutionContexts.synchronous) // just for testing
-    )
+    private def sanitizeString[T <: Any](s: T): String = s.toString.replace(".0", "")
 
-    val modelPath = sys.env("MODEL_INPUT_PATH")
-
-    def sanitizeString(s: String): String = {
-      s.replace(".0", "")
-    }
-
-    def hash(request: SoyRequest): Int = {
+    private def hash(request: SoyRequest): Int = {
       val requestArray: Array[String] = Array(
         request.Fecha,
-        sanitizeString(request.Open.toString()),
-        sanitizeString(request.High.toString()),
-        sanitizeString(request.Low.toString()),
-        sanitizeString(request.Last.toString()),
-        sanitizeString(request.AjDif.toString()),
+        sanitizeString(request.Open),
+        sanitizeString(request.High),
+        sanitizeString(request.Low),
+        sanitizeString(request.Last),
+        sanitizeString(request.AjDif),
         sanitizeString(request.Mon),
-        sanitizeString(request.OIVol.toString()),
-        sanitizeString(request.OIDif.toString()),
-        sanitizeString(request.VolOpe.toString()),
+        sanitizeString(request.OIVol),
+        sanitizeString(request.OIDif),
+        sanitizeString(request.VolOpe),
         request.Unidad,
-        sanitizeString(request.DolarBN.toString()),
-        sanitizeString(request.DolarItau.toString()),
-        sanitizeString(request.DifSem.toString()))
+        sanitizeString(request.DolarBN),
+        sanitizeString(request.DolarItau),
+        sanitizeString(request.DifSem))
 
       MurmurHash3.arrayHash(requestArray)
     }
 
-    def cierre(request: SoyRequest): Map[String, Any] = RandomForestPMMLEvaulator.run(modelPath, request.DolarBN, request.DolarItau, request.DifSem)
+    private def cierre(r: SoyRequest): Try[Double] =
+      RandomForestPMMLEvaluator.run(r.DolarBN, r.DolarItau, r.DifSem)
 
-    def processRequest(request: SoyApp.SoyRequest): F[Row] = {
-      val reqHash: Int = hash(request)
-      var reqCierre: Double = cierre(request).last._2.asInstanceOf[Double]
+    def processRequest(reqData: SoyApp.SoyRequest): F[IO[Cierre]] = {
+      val reqHash: Int = hash(reqData)
+      val reqCierre: Try[Double] = cierre(reqData)
 
-      val insert = for {
-        _ <- sql"INSERT INTO soy (fecha, open, high, low, last, cierre, ajdif, mon, oivol, oidif, volope, unidad, dolarbn, dolaritau, difsem, hash) VALUES (${request.Fecha}, ${request.Open}, ${request.High}, ${request.Low}, ${request.Last}, ${reqCierre}, ${request.AjDif}, ${request.Mon}, ${request.OIVol}, ${request.OIDif}, ${request.VolOpe}, ${request.Unidad}, ${request.DolarBN}, ${request.DolarItau}, ${request.DifSem}, ${reqHash}) ON CONFLICT (hash) DO NOTHING".update.run
-        s <- sql"SELECT * FROM soy WHERE hash = $reqHash".query[Row].unique
-      } yield s
-
-      val soyData = insert.transact(xa)
-      soyData.unsafeRunSync().pure[F]
+      reqCierre match {
+        case Success(cierre) => DB.insertAndReturnCierre(reqData, reqHash, cierre).pure[F]
+        case Failure(e) => throw e
+      }
     }
   }
 
