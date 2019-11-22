@@ -1,13 +1,7 @@
-import scala.util.Properties
-import doobie._
-import doobie.implicits._
-import cats._
 import cats.effect._
-import cats.implicits._
-import doobie.util.ExecutionContexts
+import sfpsfiuba.{CSV, DB}
 
-import sfpsfiuba.commons.{Row, DB}
-import sfpsfiuba.csv.CSV
+import scala.util.Properties
 
 
 object Main extends App {

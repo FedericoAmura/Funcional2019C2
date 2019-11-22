@@ -1,8 +1,8 @@
 import scala.util.Properties
 
-import sfpsfiuba.commons.{Row,DB}
+import sfpsfiuba.{Row,DB}
 import sfpsfiuba.ml.SparkRFPipeline
-import sfpsfiuba.ml.RandomForestPMMLEvaulator
+import sfpsfiuba.ml.RandomForestPMMLEvaluator
 
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
@@ -16,7 +16,7 @@ object Main extends App {
 
   val modelPath = Properties.envOrElse("MODEL_OUTPUT_PATH", "/tmp/model.pmml")
 
-  val rows: List[Row] = DB.getRows()
+  val rows: List[Row] = DB.getRows
 
   println("Saqué de la db " + rows.length)
 
@@ -24,6 +24,6 @@ object Main extends App {
 
   println("Terminé entrenamiento, ahora voy a evaular")
 
-  RandomForestPMMLEvaulator.run(modelPath)
+  RandomForestPMMLEvaluator.run(modelPath)
 
 }

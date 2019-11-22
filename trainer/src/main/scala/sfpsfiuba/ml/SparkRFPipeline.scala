@@ -1,7 +1,6 @@
-
 package sfpsfiuba.ml
 
-import sfpsfiuba.commons.Row
+import sfpsfiuba.Row
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.StructType
@@ -29,7 +28,7 @@ object SparkRFPipeline {
       .set("spark.executor.memory", "2g")
       .set("spark.driver.memory", "2g")
 
-    implicit val spark = SparkSession.builder().config(conf).appName("trainer").getOrCreate()
+    implicit val spark: SparkSession = SparkSession.builder().config(conf).appName("trainer").getOrCreate()
 
     import spark.implicits._
 

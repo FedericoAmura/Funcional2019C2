@@ -1,5 +1,3 @@
-import Common._
-
 lazy val commons = Subproject.commons
   .settings(libraryDependencies ++= Dependency.commons:_*)
 

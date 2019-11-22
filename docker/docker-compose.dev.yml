@@ -21,11 +21,16 @@ services:
       - "5005"
     ports:
       - "5005:5005"
-    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "-jvm-debug", "5005", "~run"]
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project dbFiller", "run"]
     volumes:
-      - ../dbFiller/src:/app/src
-      - ../dbFiller/build.sbt:/app/build.sbt
-      - ../dbFiller/train.csv:/app/train.csv
+      - ../commons/src:/app/commons/src/
+      - ../dbFiller/src:/app/dbFiller/src/
+      - ../project/build.properties:/app/project/build.properties
+      - ../project/Common.scala:/app/project/Common.scala
+      - ../project/Dependency.scala:/app/project/Dependency.scala
+      - ../project/Subproject.scala:/app/project/Subproject.scala
+      - ../build.sbt:/app/build.sbt
+      - ../train.csv:/app/train.csv
 
   soyApi:
     image: soyapi
@@ -50,11 +55,18 @@ services:
       - "5005:5005"
     environment:
       - MODEL_OUTPUT_PATH=/trainer-data/model.pmml
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project trainer", "run"]
     volumes:
-      - ../trainer/src:/app/src
-      - ../trainer/build.sbt:/app/build.sbt
+      - ../commons/src:/app/commons/src/
+      - ../project/build.properties:/app/project/build.properties
+      - ../project/Common.scala:/app/project/Common.scala
+      - ../project/Dependency.scala:/app/project/Dependency.scala
+      - ../project/Subproject.scala:/app/project/Subproject.scala
       - ../shared/trainer-data/:/trainer-data
-    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
+      - ../trainer/src:/app/trainer/src/
+      - ../trainer/docker-compose.yml:/app/trainer/docker-compose.yml
+      - ../trainer/Dockerfile:/app/trainer/Dockerfile
+      - ../build.sbt:/app/build.sbt
 
 networks:
   default:

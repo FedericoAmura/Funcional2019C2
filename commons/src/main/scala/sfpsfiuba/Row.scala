@@ -1,4 +1,4 @@
-package sfpsfiuba.commons
+package sfpsfiuba
 
 import scala.util.hashing.MurmurHash3
 
@@ -24,7 +24,7 @@ final case class Row(
 
 object Row {
 
-    def rowToHash(row: Array[String]) = {
+    def rowToHash(row: Array[String]): Int = {
         MurmurHash3.arrayHash(
             row.drop(1).patch(5, Nil, 1))  // Remove Id and Cierre
     }
