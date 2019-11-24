@@ -10,6 +10,4 @@ WORKDIR /app
 
 FROM scala-sbt/latest AS prod
 
-ARG serviceDir
-
-COPY ./$serviceDir /app
+COPY ./ /app
