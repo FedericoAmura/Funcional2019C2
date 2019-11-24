@@ -17,10 +17,6 @@ services:
 
   dbFiller:
     image: dbfiller
-    expose:
-      - "5005"
-    ports:
-      - "5005:5005"
     entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project dbFiller", "run"]
     volumes:
       - ../commons/src:/app/commons/src/
@@ -32,27 +28,25 @@ services:
       - ../build.sbt:/app/build.sbt
       - ../train.csv:/app/train.csv
 
-  soyApi:
-    image: soyapi
-    expose:
-      - "5005"
+  api:
+    image: api
     ports:
-      - "5006:5005"
       - "8080:8080"
     environment:
       - MODEL_INPUT_PATH=/trainer-data/model.pmml
-    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "-jvm-debug", "5005", "~run"]
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project api", "run"]
     volumes:
-      - ../soyApi/src:/app/src
-      - ../soyApi/build.sbt:/app/build.sbt
+      - ../api/src:/app/api/src
+      - ../commons/src:/app/commons/src/
+      - ../project/build.properties:/app/project/build.properties
+      - ../project/Common.scala:/app/project/Common.scala
+      - ../project/Dependency.scala:/app/project/Dependency.scala
+      - ../project/Subproject.scala:/app/project/Subproject.scala
       - ../shared/trainer-data/:/trainer-data
+      - ../build.sbt:/app/build.sbt
 
   trainer:
     image: trainer
-    expose:
-      - "5005"
-    ports:
-      - "5005:5005"
     environment:
       - MODEL_OUTPUT_PATH=/trainer-data/model.pmml
     entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project trainer", "run"]

@@ -20,5 +20,5 @@ services:
       - trainer-spark
 
   dbFiller: *scala-component
-  soyApi: *scala-component
+  api: *scala-component
   trainer: *scala-component

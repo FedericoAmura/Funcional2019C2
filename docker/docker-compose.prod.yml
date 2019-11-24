@@ -16,7 +16,7 @@ services:
       target: prod
     entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
 
-  soyApi:
+  api:
     image: "dbfiller/latest"
     build:
       args:
