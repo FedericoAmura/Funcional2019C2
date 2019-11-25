@@ -1,4 +1,4 @@
-package com.funcional.soyapi.sfpsfiuba.ml
+package ml
 
 import org.pmml4s.model.Model
 

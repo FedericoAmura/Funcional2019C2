@@ -1,15 +1,15 @@
 package sfpsfiuba.ml
 
-import sfpsfiuba.Row
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.regression.RandomForestRegressor
-import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.{Pipeline, PipelineModel}
 import org.jpmml.sparkml.PMMLBuilder
-
 import java.io.File
+
+import sfpsfiuba.Row
 
 object SparkRFPipeline {
 
@@ -19,9 +19,9 @@ object SparkRFPipeline {
   // case class RFInputs(Cierre: Double, features: Vector)
   // case class RowPrediction(Open: Double, High: Double, Cierre: Double, features: Vector, prediction: Double)
 
-  def run(rows: List[Row], modelPath: String):Unit = {
+  def run(rows: List[Row], modelPath: String): Unit = {
 
-    val conf = new SparkConf()
+    val conf: SparkConf = new SparkConf()
       .setAppName("trainer")
       .setMaster("local")
       .set("spark.ui.enabled", "false")
@@ -40,24 +40,24 @@ object SparkRFPipeline {
 
     trainingSet.show()
 
-    val vectorAssembler = new VectorAssembler().
+    val vectorAssembler: VectorAssembler = new VectorAssembler().
       setInputCols(Array("DolarBN", "DolarItau", "DifSem")).
       setOutputCol("features")
 
-    val rfRegressor = new RandomForestRegressor()
+    val rfRegressor: RandomForestRegressor = new RandomForestRegressor()
       .setFeaturesCol("features")
       .setLabelCol("Cierre")
 
     val schema: StructType = trainingSet.schema;
 
-    val pipeline = new Pipeline()
+    val pipeline: Pipeline = new Pipeline()
       .setStages(Array(vectorAssembler, rfRegressor))
-    val model = pipeline.fit(trainingSet)
+    val model: PipelineModel = pipeline.fit(trainingSet)
 
-    val predictions = model.transform(testSet)
+    val predictions: DataFrame = model.transform(testSet)
     predictions.show()
 
-    val builder = new PMMLBuilder(schema, model)
+    val builder: PMMLBuilder = new PMMLBuilder(schema, model)
 
     builder.buildFile(new File(modelPath))
 

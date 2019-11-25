@@ -1,8 +1,5 @@
-package com.funcional.soyapi
-
 import cats.effect._
 import cats.implicits._
-import com.funcional.soyapi.sfpsfiuba.Commons.Cierre
 import io.circe._
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -11,6 +8,7 @@ import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 
+import sfpsfiuba.{Cierre, DB, SoyRequest}
 
 object SoyapiRoutes {
   implicit val encodeCierre: Encoder[IO[Cierre]] = new Encoder[IO[Cierre]] {
@@ -29,7 +27,7 @@ object SoyapiRoutes {
     HttpRoutes.of[F] {
       case req @ GET -> Root / "soy" =>
         for {
-          req <- req.as[SoyApp.SoyRequest]
+          req <- req.as[SoyRequest]
           soyData <- S.processRequest(req)
           resp <- Ok(soyData.asJson)
         } yield resp
