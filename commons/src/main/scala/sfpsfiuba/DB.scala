@@ -1,4 +1,4 @@
-package sfpsfiuba.commons
+package sfpsfiuba
 
 import doobie._
 import doobie.implicits._
@@ -20,14 +20,14 @@ object DB {
   )
 
   def insertRows(rows: List[Row]): IO[Int] = {
-    val query: String = "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    val query: String = "INSERT INTO soy VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (hash) DO NOTHING"
     Update[Row](query, None)
       .updateMany(rows)
       .transact(xa)
   }
 
-  def getRows(): List[Row] = {
-    sql"select * from soy"
+  def getRows: List[Row] = {
+    sql"SELECT * FROM soy"
       .query[Row]
       .to[List]
       .transact(xa)

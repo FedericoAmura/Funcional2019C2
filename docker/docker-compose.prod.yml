@@ -5,21 +5,21 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=soy
-    ports:
-      - "54320:5432"
 
   dbFiller:
     image: "dbfiller/latest"
     build:
-      args:
-        serviceDir: dbFiller
       target: prod
-    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project dbFiller", "run"]
 
-  soyApi:
+  api:
     image: "dbfiller/latest"
     build:
-      args:
-        serviceDir: dbFiller
       target: prod
-    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "run"]
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project api", "run"]
+
+  trainer:
+    image: "trainer/latest"
+    build:
+      target: prod
+    entrypoint: ["/root/.sdkman/candidates/sbt/current/bin/sbt", "project trainer", "run"]

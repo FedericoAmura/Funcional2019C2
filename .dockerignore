@@ -9,21 +9,15 @@ target
 .devcontainer
 
 # project
-api/project
 commons/project
 dbFiller/project
-project/project
 trainer/project
 
-#target
-api/target
-commons/target
+# dbFiller
 dbFiller/target
-project/target
-trainer/target
 
 # shared
-shared/postgres-data/data
+shared/postgres-data
 !shared/postgres-data/migrations
 shared/trainer-data
 shared/*.csv

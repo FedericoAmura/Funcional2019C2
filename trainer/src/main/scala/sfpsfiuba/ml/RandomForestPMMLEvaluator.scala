@@ -1,11 +1,10 @@
-
 package sfpsfiuba.ml
 
 import org.pmml4s.model.Model
 
-object RandomForestPMMLEvaulator {
+object RandomForestPMMLEvaluator {
 
-  def run(modelPath: String) = {
+  def run(modelPath: String): Unit = {
     val model = Model.fromFile(modelPath)
 
     val result = model.predict(Map(

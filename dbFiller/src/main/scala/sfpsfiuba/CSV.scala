@@ -1,8 +1,8 @@
-package sfpsfiuba.csv
+package sfpsfiuba
 
-import scala.io.{BufferedSource,Source}
-import cats.effect._ 
-import sfpsfiuba.commons.Row
+import cats.effect._
+
+import scala.io.{BufferedSource, Source}
 
 
 object CSV {
