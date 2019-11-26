@@ -50,3 +50,7 @@ sbt
 3. Para correr el sistema completo en modo debug (con live reloading) ejecutar `./scripts/upDev.sh`
 
 4. Para correr como prod ejecutar `./script/upProd.sh`
+
+# Informes
+
+Desde la raiz del proyecto ejecutar `./script/generarInformes.sh` y se va a generar el informe desde `preambulo.md` e `informe.md` en formato pdf y LaTex
