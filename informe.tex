@@ -1,0 +1,362 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[10pt,spanish,a4paper,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={75.71 Seminario de Ing. en Informatica I},
+            pdfauthor={Amura, Federico; Gavrilov, Sebastian},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[left=2.5cm,right=2.5cm,top=3.5cm,bottom=3.5cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,main=spanish]{babel}
+\else
+  % load polyglossia as late as possible as it *could* call bidi if RTL lang (e.g. Hebrew or Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[]{spanish}
+\fi
+
+\title{75.71 Seminario de Ing. en Informatica I}
+\providecommand{\subtitle}[1]{}
+\subtitle{Programacion Funcional en Scala}
+\author{Amura, Federico \and Gavrilov, Sebastian}
+\date{}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\newpage
+
+\hypertarget{sistema-de-valoraciuxf3n-de-cierre-de-lotes-de-soja}{%
+\section{Sistema de valoración de cierre de lotes de
+soja}\label{sistema-de-valoraciuxf3n-de-cierre-de-lotes-de-soja}}
+
+\hypertarget{estructura}{%
+\subsection{Estructura}\label{estructura}}
+
+El proyecto se encuentra dividido en diferentes módulos que se debieran
+ejecutar secuencialmente para poder construir el modelo final. Los
+módulos son
+
+\begin{itemize}
+\tightlist
+\item
+  Base de datos
+\item
+  Repositorio de entidades comunes
+\item
+  ETL para carga inicial
+\item
+  Entrenador de modelo de evaluación
+\item
+  API de consulta de valores de cierre
+\end{itemize}
+
+La gestión para el desarrollo de los módulos se maneja bajo un proyecto
+umbrella que maneja las dependencias entre ellos, en general agregando
+las dependencias comunes al proyecto especifico
+
+\hypertarget{ejecuciuxf3n}{%
+\subsection{Ejecución}\label{ejecuciuxf3n}}
+
+Para correr el proyecto, tenemos diferentes alternativas. La única
+dependencia del sistema es \href{https://docs.docker.com/}{docker} y
+\href{https://docs.docker.com/compose/install/}{compose}. Para correr el
+sistema podemos usar una de las distintas opciones:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# correr completo en modo desarrollo}
+\ExtensionTok{./script/upDev.sh}
+
+\CommentTok{# correr completo en modo produccion}
+\ExtensionTok{./script/upProd.sh}
+
+\CommentTok{# para correr partes especificas en modo desarrollo}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up postgres}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up dbFiller}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up trainer}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up api}
+
+\CommentTok{# para correr partes especificas en modo producción}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up postgres}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up dbFiller}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up trainer}
+\ExtensionTok{docker-compose}\NormalTok{ -f ./docker/docker-compose.base.yml \textbackslash{}}
+\NormalTok{               -f ./docker/docker-compose.dev.yml up api}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+
+\hypertarget{base-de-datos}{%
+\subsection{Base de datos}\label{base-de-datos}}
+
+La base de datos esta sobre el motor PostgreSQL, cuenta con una única
+tabla que almacena los valores de los distintos cierres de los lotes de
+soja. Cuenta con los siguientes campos:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Campo & Tipo\tabularnewline
+\midrule
+\endhead
+id & \textbf{integer, primary key}\tabularnewline
+fecha & text\tabularnewline
+open & double\tabularnewline
+high & double\tabularnewline
+low & double\tabularnewline
+last & double\tabularnewline
+cierre & double\tabularnewline
+ajdif & double\tabularnewline
+mon & text, default `D'\tabularnewline
+oivol & integer\tabularnewline
+oidif & integer\tabularnewline
+volope & integer\tabularnewline
+unidad & text, default `TONS'\tabularnewline
+dolarbn & double\tabularnewline
+dolaritau & double\tabularnewline
+difsem & double\tabularnewline
+hash & \textbf{integer, unique}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Se agrega el hash para poder, desde los datos, determinar si esa entrada
+ya se encuentra evaluada y persistida en la tabla.
+
+\hypertarget{clases-comunes}{%
+\subsection{Clases comunes}\label{clases-comunes}}
+
+\textbf{Nombre de proyecto: commons}
+
+En este subproyecto se incluyen las clases comunes que se usan a través
+de todo el resto de los proyectos. Incluye:
+
+\begin{itemize}
+\tightlist
+\item
+  Cierre: encapsula el valor de cierre que tuvo una valuación
+\item
+  DB: conexión a la base de datos y queries que se ejecutan sobre ella
+\item
+  Row: que representa una entrada en la base de datos
+\item
+  SoyRequest: una consulta al sistema sobre la cual se puede generar un
+  cierre y generar entradas en la base de datos
+\end{itemize}
+
+\hypertarget{carga-de-datos}{%
+\subsection{Carga de datos}\label{carga-de-datos}}
+
+\textbf{Nombre de proyecto: dbFiller}
+
+Este proyecto toma la entrada desde un archivo de datos y los inserta en
+la base de datos para posteriormente entrenar el modelo de evaluación o
+ser dispuestos por la API.
+
+El programa de este proyecto esta compuesto por 2 mónadas IO. La primera
+mónada IO, lee las lineas del archivo de entrenamiento, las mapea a la
+clase Row y devuelve una lista de estas. Acá se emplea la clase
+\texttt{Resource} de la biblioteca cats para asegurar el cierre del
+archivo una vez hecho el procesamiento. La segunda IO, simplemente
+inserta la lista de Rows en la base de datos. Para el acceso a base de
+datos utilizamos la biblioteca \texttt{doobie}, que da una capa
+funcional de acceso a la base de datos. Usando \texttt{doobie} los
+accesos a la base de datos se pueden representar como mónadas IO, y
+luego se pueden componer.
+
+Las mónadas se componen con una for comprehension como un ETL y
+finalmente se lo ejecuta.
+
+\hypertarget{prediccion-de-valores}{%
+\subsection{Prediccion de valores}\label{prediccion-de-valores}}
+
+\textbf{Nombre de proyecto: trainer}
+
+Este paso levanta un cluster Spark en modo local y entrena un modelo
+RandomForest en su versión para regresión basado en los datos cargados
+en la base. Este modelo luego sirve para generar datos de cierre para
+nuevas valuaciones recibidas en la API.
+
+Se compone de tres etapas:
+
+\begin{itemize}
+\tightlist
+\item
+  Obtención de los datos de la base de datos
+\item
+  Entrenamiento del modelo en spark
+\item
+  Serialización del modelo en un archivo en formato PMML
+\end{itemize}
+
+El primer paso es un simple acceso a la base de datos, encerrado en una
+mónada IO proveída por \texttt{doobie}. El segundo paso tiene varias
+etapas.
+
+\begin{itemize}
+\tightlist
+\item
+  Primero la creación del cluster en modo local, que está modelada como
+  un \texttt{Resource} de \texttt{cats}, que asegura que el cluster es
+  terminado correctamente. Luego el procesamiento de datos.
+\item
+  Luego procesamiento de datos de entrada para convertirlos en un set de
+  entrenamiento y de prueba. Para eso se utiliza la biblioteca
+  \texttt{frameless}, que provee una capa funcional sobre los
+  procesamientos de spark. En este paso los datos de entrada se filtran
+  para quedar con solo los valores usados para entrenar y la etiqueta a
+  predecir (Cierre). Para entrenar se eligió un subset pequeño de
+  columnas representativas: DolarBN, DolarItau y DifSem. Una vez
+  filtrados, se los separa en sets de entrenamiento y de test (80\% y
+  20\% respectivamente), y se los compone en un solo vector de features
+  (utilizando Vector Assembler de \texttt{frameless}).
+\item
+  Se realiza el entrenamiento. Elegimos el algoritmo de Random Forest,
+  por su relativa facilidad de empleo en ese pipeline (para la otra
+  alternativa, regresión de XGBoost, no se encontró una forma fácil de
+  serializarla). La implementación del algoritmo que se utilizó es la
+  que provee \texttt{frameless}, asi aprovechamos sus checkeos de tipo
+  en tiempo de compilación.
+\item
+  Finalmente se convierte el modelo en una tira de bytes en formato PMML
+  para su futura serialización. Para esto, se juntan el \emph{Vector
+  Assembler} y el modelo de \emph{Random Forest} en un \emph{Pipeline}
+  de spark. Como las implementaciones de \texttt{frameless} no son
+  directamente compatibles, para generar ese pipeline se tuvo que
+  acceder a atributos de implementación, dejandonos para después crear
+  una abstracción adecuada. Para convertir el Pipeline en PMML se
+  utilizó la biblioteca \texttt{jpmml-sparkml}.
+\end{itemize}
+
+El último paso escribe la tira de bytes del paso anterior en un archivo.
+Este paso nuevamente es modelado como un Resource y una mónada IO que
+realiza la escritura.
+
+\hypertarget{api-de-consultas}{%
+\subsection{API de consultas}\label{api-de-consultas}}
+
+\textbf{Nombre de proyecto: api}
+
+Dispone un servicio API para consultar los valores de cierre de ciertos
+lotes, en caso de ser un dato conocido, se devuelve el valor de cierre
+que tuvo; si no lo es, entonces utiliza el modelo para generar un nuevo
+dato de cierre, persistiendolo en la base de datos y devolviendo esta
+nueva valuación.
+
+Basado en http4s, el programa básico con cada request, mediante una for
+comprehension, es - Tomar el body del request como SoyRequest -
+Procesarlo en nuestra aplicacion - Devolver el resultado de cierre como
+JSON
+
+El procesamiento del request es implica primero conseguir el cierre del
+mismo a partir de sus datos, como depende del modelo, lo tenemos
+incluido en una mónada Try, la cual después, mediante pattern matching
+podemos operar en su valor o tirar la exception directamente (esto
+podría mejorarse). En caso de ser exitosa la evaluación, entonces se
+ejecuta el programa que inserta y devuelve el cierre sobre la base de
+datos Este ultimo programa, es una composición de uno, que inserta los
+datos en la base de datos, pero solo en caso que no existan aprovechando
+que podemos identificarlo mediante el hash, y otro, que recupera el dato
+de cierre de la base (que teníamos desde los datos de entrenamiento o
+del modelo)
+
+\end{document}
